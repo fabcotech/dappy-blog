@@ -1,0 +1,26 @@
+{
+  "manifest": {
+    "title": "My cool blog",
+    "description": "This is a append-only blog !",
+    "author": "Willy",
+    "cssLibraries": ["bulma@0.x"],
+    "jsLibraries": [
+      "react@16.8.5",
+      "react-dom@16.8.5",
+      "redux@4.0.1",
+      "react-redux@6.0.1"
+    ],
+    "jsPath": "dist/main.js",
+    "cssPath": "dapp-blog.css",
+    "htmlPath": "dapp-blog.html"
+  },
+  "options": {
+    "platform": "rchain",
+    "host": "localhost",
+    "port": "40401",
+    "private_key": "PRIVATE_KEY",
+    "public_key": "PUBLIC_KEY",
+    "registry_uri": "REGISTRY_URI",
+    "unforgeable_name_id": "UNFORGEABLE_NAME_ID"
+  }
+}
