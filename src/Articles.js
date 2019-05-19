@@ -45,6 +45,9 @@ export const Articles = connect(
       loadArticles: () => {
         const nameByteArray = new Buffer(UNFORGEABLE_NAME_ID, "hex");
         const channelRequest = { ids: [{ id: Array.from(nameByteArray) }] };
+        if (typeof dappyRChain === "undefined") {
+          return;
+        }
         dappyRChain
           .listenForDataAtName(new Date().getTime().toString(), {
             depth: 1000,

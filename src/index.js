@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
 
 import { store } from "./store";
 import { App } from "./App";
@@ -12,9 +13,9 @@ export const BLOG_TITLE = "My cool blog";
 
 const Index = () => {
   return (
-    <ReactRedux.Provider store={store}>
+    <Provider store={store}>
       <App />
-    </ReactRedux.Provider>
+    </Provider>
   );
 };
 
@@ -23,6 +24,6 @@ window.onload = () => {
 };
 
 // In Dappy, window is already loaded when this code executes
-if (!!dappyRChain) {
+if (typeof dappyRChain !== "undefined") {
   ReactDOM.render(<Index />, document.getElementById("root"));
 }
