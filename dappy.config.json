@@ -1,26 +1,19 @@
 {
   "manifest": {
-    "title": "My cool blog",
-    "description": "This is a append-only blog !",
-    "author": "Willy",
-    "cssLibraries": ["bulma@0.x"],
-    "jsLibraries": [
-      "react@16.8.5",
-      "react-dom@16.8.5",
-      "redux@4.0.1",
-      "react-redux@6.0.1"
-    ],
+    "title": "My dapp",
     "jsPath": "dist/main.js",
     "cssPath": "dapp-blog.css",
     "htmlPath": "dapp-blog.html"
   },
   "options": {
     "platform": "rchain",
-    "host": "localhost",
-    "port": "40401",
-    "private_key": "PRIVATE_KEY",
-    "public_key": "PUBLIC_KEY",
-    "registry_uri": "REGISTRY_URI",
-    "unforgeable_name_id": "UNFORGEABLE_NAME_ID"
+    "readOnlyHost": "http://localhost",
+    "readOnlyHostHttpPort": "40403",
+    "validatorHost": "http://localhost",
+    "validatorHostHttpPort": "40403",
+    "validatorHostgrpcProposePort": "40402",
+    "private_key": "",
+    "registry_uri": "registry URI for the update of the dapp manifest (logged by rnode after push has been ran)",
+    "unforgeable_name_id": "unforgeable name ID, blockchain address of the dapp manifest"
   }
 }

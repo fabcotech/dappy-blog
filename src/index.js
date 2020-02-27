@@ -5,10 +5,6 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { App } from "./App";
 
-export const UNFORGEABLE_NAME_ID =
-  "8a03bd532a12096aa8d8daf1c13663508785498391a4fee088edaba6861dbf48";
-export const REGISTRY_URI =
-  "ohqkjueg5ud5kgyx51p1ow9cnejpe5spzdi1hui3bancb9ag3zikjj";
 export const BLOG_TITLE = "My cool blog";
 
 const Index = () => {
@@ -20,10 +16,41 @@ const Index = () => {
 };
 
 window.onload = () => {
+  console.log("ONLOAD");
   ReactDOM.render(<Index />, document.getElementById("root"));
 };
 
 // In Dappy, window is already loaded when this code executes
 if (typeof dappyRChain !== "undefined") {
-  ReactDOM.render(<Index />, document.getElementById("root"));
+  dappyRChain
+    .fetch("dappy://rchain/alphanetwork/UNFORGEABLE_NAME_1")
+    .then(a => {
+      const response = JSON.parse(a);
+      const rholangTerm = response.expr;
+      const jsValue = blockchainUtils.rhoValToJs(rholangTerm);
+      // get nonce value
+      dappyRChain
+        .fetch(
+          `dappy://rchain/alphanetwork/${jsValue.unforgeable_name_nonce.UnforgPrivate}`
+        )
+        .then(a => {
+          const responseNonce = JSON.parse(a);
+          const rholangTermNonce = responseNonce.expr;
+          const jsValueNonce = blockchainUtils.rhoValToJs(rholangTermNonce);
+          store.dispatch({
+            type: "INIT",
+            payload: {
+              unforgeableNameId:
+                jsValue.unforgeable_name_articles.UnforgPrivate,
+              registryUri: jsValue.registry_uri.replace("rho:id:", ""),
+              publicKey: jsValue.public_key,
+              nonce: jsValueNonce
+            }
+          });
+          ReactDOM.render(<Index />, document.getElementById("root"));
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }

@@ -1,6 +1,11 @@
 import { createStore } from "redux";
 
 const initialState = {
+  unforgeableNameId: undefined,
+  registryUri: undefined,
+  publicKey: undefined,
+  nonce: undefined,
+  identified: false,
   articles: {
     ids: [],
     entities: {}
@@ -11,6 +16,27 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   console.log(action);
   switch (action.type) {
+    case "INIT": {
+      return {
+        ...state,
+        registryUri: action.payload.registryUri,
+        publicKey: action.payload.publicKey,
+        unforgeableNameId: action.payload.unforgeableNameId,
+        nonce: action.payload.nonce
+      };
+    }
+    case "IDENTIFIED": {
+      return {
+        ...state,
+        identified: true
+      };
+    }
+    case "UPDATE_NONCE": {
+      return {
+        ...state,
+        nonce: action.payload
+      };
+    }
     case "GO_HOME": {
       return {
         ...state,

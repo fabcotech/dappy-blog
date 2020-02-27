@@ -1,0 +1,22 @@
+new basket, entryCh, lookup(`rho:registry:lookup`), stdout(`rho:io:stdout`) in {
+  lookup!(`rho:id:9f8afbu8wqfjdfmkan7dyaetm9miyqfdx4ptkzut7xat8r4k8pmggp`, *entryCh) |
+  for(entry <- entryCh) {
+    entry!(
+      {
+        "type": "CREATE",
+        "payload": {
+          "article": {
+            "id": "1231231236",
+            "title": "${payload.title}",
+            "author": "${payload.author}",
+            "content": "${payload.content}",
+          },
+          "nonce": "99cab8c58ea54d2294876e1f62b1c141",
+          "signature": "3045022100a8054d537aaec014158213ebc8b2c24455cba0b6d30b2541db25e553d971186a02207099ccbaffcc5a8177c9fc60170d01149816bc03c01cb5380847ae007f15f8d6"
+        }
+      },
+      *stdout
+    )
+  } |
+  basket!({ "status": "completed" })
+}
