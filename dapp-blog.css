@@ -23,6 +23,9 @@
   padding-bottom: 30px;
   border-bottom: 1px solid #ddd;
 }
+.article .is-medium {
+  white-space: pre;
+}
 
 .column.is-one-quarter {
   display: flex;

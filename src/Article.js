@@ -12,11 +12,9 @@ export class Article extends React.Component {
   }
 
   saveTitleRef = el => {
-    console.log(el);
     this.titleRev = el;
   };
   saveTipRef = el => {
-    console.log(el);
     this.tipRev = el;
   };
 
@@ -71,7 +69,7 @@ export class Article extends React.Component {
           </ul>
         </div>
         <h3 className="title is-3">
-          <span ref={this.saveTitleRef}>{this.props.title}</span>
+          <span ref={this.saveTitleRef}>{decodeURI(this.props.title)}</span>
           {this.props.address ? (
             <span
               className={`tip-button ${this.props.id}`}
@@ -85,19 +83,14 @@ export class Article extends React.Component {
         </h3>
         <h6 className="title is-6">
           {this.props.author && this.props.author.length ? (
-            <span>Published by {this.props.author}, </span>
+            <span>Published by {decodeURI(this.props.author)}, </span>
           ) : (
             undefined
           )}
           {new Date(parseInt(this.props.id)).toString()}
         </h6>
         <div className="content">
-          <div
-            className="is-medium"
-            dangerouslySetInnerHTML={{
-              __html: this.props.content
-            }}
-          />
+          <div className="is-medium">{decodeURI(this.props.content)}</div>
         </div>
       </div>
     );

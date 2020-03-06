@@ -24,8 +24,8 @@
     "webpack-cli": "^3.3.6"
   },
   "dependencies": {
-    "rchain-toolkit": "0.2.1",
-    "dappy-cli": "0.3.2",
+    "rchain-toolkit": "0.2.3",
+    "dappy-cli": "file:../dappy-cli/",
     "uuid": "3.4.0",
     "@popperjs/core": "^2.0.6",
     "react": "16.8.5",

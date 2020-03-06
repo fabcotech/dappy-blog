@@ -1,8 +1,8 @@
 import { createStore } from "redux";
 
 const initialState = {
-  unforgeableNameId: undefined,
-  registryUri: undefined,
+  filesRegistryUri: undefined,
+  entryRegistryUri: undefined,
   publicKey: undefined,
   nonce: undefined,
   identified: false,
@@ -19,9 +19,9 @@ const reducer = (state = initialState, action) => {
     case "INIT": {
       return {
         ...state,
-        registryUri: action.payload.registryUri,
+        filesRegistryUri: action.payload.filesRegistryUri,
+        entryRegistryUri: action.payload.entryRegistryUri,
         publicKey: action.payload.publicKey,
-        unforgeableNameId: action.payload.unforgeableNameId,
         nonce: action.payload.nonce
       };
     }

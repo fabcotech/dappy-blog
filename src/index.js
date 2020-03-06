@@ -16,41 +16,32 @@ const Index = () => {
 };
 
 window.onload = () => {
-  console.log("ONLOAD");
   ReactDOM.render(<Index />, document.getElementById("root"));
 };
 
 // In Dappy, window is already loaded when this code executes
 if (typeof dappyRChain !== "undefined") {
   dappyRChain
-    .fetch("dappy://rchain/alphanetwork/UNFORGEABLE_NAME_1")
+    .fetch("dappy://rchain/betanetwork/REGISTRY_URI")
     .then(a => {
       const response = JSON.parse(a);
-      const rholangTerm = response.expr;
+      const rholangTerm = response.expr[0];
       const jsValue = blockchainUtils.rhoValToJs(rholangTerm);
-      // get nonce value
-      dappyRChain
-        .fetch(
-          `dappy://rchain/alphanetwork/${jsValue.unforgeable_name_nonce.UnforgPrivate}`
-        )
-        .then(a => {
-          const responseNonce = JSON.parse(a);
-          const rholangTermNonce = responseNonce.expr;
-          const jsValueNonce = blockchainUtils.rhoValToJs(rholangTermNonce);
-          store.dispatch({
-            type: "INIT",
-            payload: {
-              unforgeableNameId:
-                jsValue.unforgeable_name_articles.UnforgPrivate,
-              registryUri: jsValue.registry_uri.replace("rho:id:", ""),
-              publicKey: jsValue.public_key,
-              nonce: jsValueNonce
-            }
-          });
-          ReactDOM.render(<Index />, document.getElementById("root"));
-        });
+      store.dispatch({
+        type: "INIT",
+        payload: {
+          filesRegistryUri: jsValue.filesRegistryUri.replace("rho:id:", ""),
+          entryRegistryUri: jsValue.entryRegistryUri.replace("rho:id:", ""),
+          publicKey: jsValue.publicKey,
+          nonce: jsValue.nonce
+        }
+      });
+      ReactDOM.render(<Index />, document.getElementById("root"));
     })
     .catch(err => {
+      console.error(
+        "Something went wrong when retreiving the files module object"
+      );
       console.log(err);
     });
 }

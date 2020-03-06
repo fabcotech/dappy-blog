@@ -2,16 +2,18 @@ import React from "react";
 
 class WritingComponent extends React.Component {
   componentDidMount() {
-    var quill = new Quill("#editor", {
+    /*     var quill = new Quill("#editor", {
       theme: "snow"
     });
     quill.on("text-change", () => {
       this.content = quill.root.innerHTML;
-    });
+    }); */
 
-    this.address = window.blockchainUtils.revAddressFromPublicKey(
-      this.props.publicKey
-    );
+    if (window.blockchainUtils) {
+      this.address = window.blockchainUtils.revAddressFromPublicKey(
+        this.props.publicKey
+      );
+    }
   }
 
   render() {
@@ -52,7 +54,6 @@ class WritingComponent extends React.Component {
                   : undefined
               }
               onChange={e => {
-                console.log(this.address, e.target.value);
                 this.address = e.target.value;
               }}
               className="input"
@@ -63,7 +64,14 @@ class WritingComponent extends React.Component {
         <div className="field">
           <label className="label">Content</label>
           <div className="control">
-            <div id="editor" />
+            <textarea
+              onChange={e => {
+                this.content = e.target.value;
+              }}
+              className="textarea"
+              rows="14"
+              placeholder="Hello world"
+            ></textarea>
           </div>
         </div>
         <div className="field">
@@ -71,12 +79,12 @@ class WritingComponent extends React.Component {
             <button
               onClick={() => {
                 this.props.sendArticle({
-                  registryUri: this.props.registryUri,
-                  unforgeableNameId: this.props.unforgeableNameId,
-                  title: this.title,
-                  author: this.author,
-                  content: this.content,
+                  entryRegistryUri: this.props.entryRegistryUri,
+                  filesRegistryUri: this.props.filesRegistryUri,
                   nonce: this.props.nonce,
+                  title: encodeURI(this.title),
+                  author: encodeURI(this.author),
+                  content: encodeURI(this.content),
                   address: this.address
                 });
               }}

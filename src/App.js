@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { BLOG_TITLE } from "./index";
 import { Writing } from "./Writing";
 import { Articles } from "./Articles";
+import { loadAllArticles } from "./loadAllArticles";
 
 const AppComponent = props => {
   return (
@@ -11,7 +12,7 @@ const AppComponent = props => {
       <h2 className="title is-2">{BLOG_TITLE}</h2>
       <div className="columns left-menu">
         <div className="column is-one-quarter">
-          <a onClick={() => props.goHome(props.unforgeableNameId)}>Home</a>
+          <a onClick={() => props.goHome(props.filesRegistryUri)}>Home</a>
           {props.publicKey && props.identified ? (
             <a onClick={() => props.toggleWrite()}>Write article</a>
           ) : (
@@ -21,8 +22,7 @@ const AppComponent = props => {
         <div className="column is-three-quarter">
           {props.writing && (
             <Writing
-              registryUri={props.registryUri}
-              unforgeableNameId={props.unforgeableNameId}
+              entryRegistryUri={props.entryRegistryUri}
               publicKey={props.publicKey}
               nonce={props.nonce}
               sendArticle={props.sendArticle}
@@ -30,7 +30,7 @@ const AppComponent = props => {
           )}
           {!props.writing && (
             <Articles
-              unforgeableNameId={props.unforgeableNameId}
+              filesRegistryUri={props.filesRegistryUri}
               loadArticles={props.loadArticles}
               articles={props.articles}
               onTip={props.onTip}
@@ -46,10 +46,10 @@ const mapStateToProps = state => {
   return {
     writing: state.writing,
     articles: state.articles,
-    registryUri: state.registryUri,
+    entryRegistryUri: state.entryRegistryUri,
     publicKey: state.publicKey,
     nonce: state.nonce,
-    unforgeableNameId: state.unforgeableNameId,
+    filesRegistryUri: state.filesRegistryUri,
     identified: state.identified
   };
 };
@@ -75,27 +75,24 @@ export const App = connect(mapStateToProps, dispatch => {
           console.log(err);
         });
     },
-    loadArticles: unforgeableNameId => {
+    loadArticles: filesRegistryUri => {
       if (typeof dappyRChain === "undefined") {
         console.warn("window.dappyRChain is undefined, cannot fetch articles");
         return;
       }
-      dappyRChain
-        .fetch("dappy://rchain/alphanetwork/" + unforgeableNameId)
-        .then(a => {
-          const response = JSON.parse(a);
-          const rholangTerm = response.expr;
-          const jsValue = blockchainUtils.rhoValToJs(rholangTerm);
+      loadAllArticles(filesRegistryUri)
+        .then(articles => {
           dispatch({
             type: "UPDATE_ARTICLES",
-            payload: jsValue
+            payload: articles
           });
         })
         .catch(err => {
+          console.error("Something went wrong when loading articles");
           console.log(err);
         });
     },
-    goHome: unforgeableNameId => {
+    goHome: filesRegistryUri => {
       dispatch({
         type: "GO_HOME"
       });
@@ -103,18 +100,15 @@ export const App = connect(mapStateToProps, dispatch => {
         console.warn("window.dappyRChain is undefined, cannot fetch articles");
         return;
       }
-      dappyRChain
-        .fetch("dappy://rchain/alphanetwork/" + unforgeableNameId)
-        .then(a => {
-          const response = JSON.parse(a);
-          const rholangTerm = response.expr;
-          const jsValue = blockchainUtils.rhoValToJs(rholangTerm);
+      loadAllArticles(filesRegistryUri)
+        .then(articles => {
           dispatch({
             type: "UPDATE_ARTICLES",
-            payload: jsValue
+            payload: articles
           });
         })
         .catch(err => {
+          console.error("Something went wrong when loading articles");
           console.log(err);
         });
     },
@@ -128,24 +122,26 @@ export const App = connect(mapStateToProps, dispatch => {
         return;
       }
       const newNonce = blockchainUtils.generateNonce();
+      const id = new Date().getTime().toString();
       dappyRChain
         .transaction({
           term: `new basket, entryCh, lookup(\`rho:registry:lookup\`), stdout(\`rho:io:stdout\`) in {
-            lookup!(\`rho:id:${payload.registryUri}\`, *entryCh) |
+            lookup!(\`rho:id:${payload.entryRegistryUri}\`, *entryCh) |
             for(entry <- entryCh) {
               entry!(
                 {
-                  "type": "CREATE",
+                  "type": "ADD",
                   "payload": {
-                    "article": {
-                      "id": "${new Date().getTime().toString()}",
+                    "file": {
+                      "id": "${id}",
                       "title": "${payload.title}",
                       "author": "${payload.author}",
                       "content": "${payload.content}",
                       "address": "${payload.address}",
                     },
                     "nonce": "${newNonce}",
-                    "signature": "SIGN"
+                    "signature": "SIGN",
+                    "id": "${id}",
                   }
                 },
                 *stdout
@@ -158,24 +154,17 @@ export const App = connect(mapStateToProps, dispatch => {
           }
         })
         .then(a => {
-          return dappyRChain.fetch(
-            "dappy://rchain/alphanetwork/" + payload.unforgeableNameId
-          );
+          console.log(a);
+          return loadAllArticles(payload.filesRegistryUri);
         })
-        .then(a => {
-          const response = JSON.parse(a);
-          const rholangTerm = response.expr;
-          const jsValue = blockchainUtils.rhoValToJs(rholangTerm);
+        .then(articles => {
           dispatch({
             type: "UPDATE_ARTICLES",
-            payload: jsValue
-          });
-          dispatch({
-            type: "UPDATE_NONCE",
-            payload: newNonce
+            payload: articles
           });
         })
         .catch(err => {
+          console.error("Something went wrong");
           console.log(err);
         });
     },

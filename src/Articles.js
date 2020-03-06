@@ -7,7 +7,7 @@ export const Articles = props => {
 
   if (props.articles.ids.length === 0 && !load) {
     setLoad(true);
-    props.loadArticles(props.unforgeableNameId);
+    props.loadArticles(props.filesRegistryUri);
   }
 
   if (props.articles.ids.length === 0) {
