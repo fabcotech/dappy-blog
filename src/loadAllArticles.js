@@ -36,7 +36,7 @@ export const loadAllArticles = filesRegistryUri => {
                   const a = blockchainUtils.rhoValToJs(
                     JSON.parse(r.data).expr[0]
                   );
-                  articles[r.id] = a;
+                  articles[a.id] = a;
                 });
               }
               resolve(articles);

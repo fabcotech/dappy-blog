@@ -19,10 +19,11 @@ const AppComponent = props => {
             <a onClick={() => props.identify(props.publicKey)}>Identify</a>
           )}
         </div>
-        <div className="column is-three-quarter">
+        <div className="column is-three-quarters">
           {props.writing && (
             <Writing
               entryRegistryUri={props.entryRegistryUri}
+              filesRegistryUri={props.filesRegistryUri}
               publicKey={props.publicKey}
               nonce={props.nonce}
               sendArticle={props.sendArticle}
@@ -161,6 +162,9 @@ export const App = connect(mapStateToProps, dispatch => {
           dispatch({
             type: "UPDATE_ARTICLES",
             payload: articles
+          });
+          dispatch({
+            type: "GO_HOME"
           });
         })
         .catch(err => {

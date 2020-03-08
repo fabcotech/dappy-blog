@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "rchain-toolkit": "0.2.3",
-    "dappy-cli": "file:../dappy-cli/",
+    "dappy-cli": "0.3.4",
     "uuid": "3.4.0",
     "@popperjs/core": "^2.0.6",
     "react": "16.8.5",
